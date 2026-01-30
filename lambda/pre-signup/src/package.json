@@ -1,0 +1,7 @@
+{
+  "name": "pre-signup",
+  "version": "1.0.0",
+  "description": "Cognito pre-signup trigger to restrict email domains",
+  "main": "index.js",
+  "dependencies": {}
+}

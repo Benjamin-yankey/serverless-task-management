@@ -1,0 +1,6 @@
+# Replace these values with your actual S3 bucket and DynamoDB table
+bucket         = "yserverless-task-mgmt-bucket"
+key            = "serverless-task-management/dev/terraform.tfstate"
+region         = "eu-west-1"
+dynamodb_table = "terraform-state-lock"
+encrypt        = true
