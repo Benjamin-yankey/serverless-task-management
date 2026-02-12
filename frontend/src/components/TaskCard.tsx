@@ -87,11 +87,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdate }) => {
       <div className="task-header">
         <h3 className="task-title">{task.title}</h3>
         <span
-          className="task-priority"
-          style={{
-            backgroundColor:
-              priorityColors[task.priority as keyof typeof priorityColors],
-          }}
+          className={`task-priority ${task.priority}`}
         >
           {task.priority}
         </span>

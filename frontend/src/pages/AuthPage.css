@@ -1,0 +1,128 @@
+/* Professional Authentication Page Styles */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
+/* Apply Outfit font globally to auth page */
+.auth-page * {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.auth-page .animate-fadeIn {
+  animation: fadeIn 500ms ease-out;
+}
+
+.auth-page .animate-slideDown {
+  animation: slideDown 300ms ease-out;
+}
+
+.auth-page .animate-pulse {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Background orbs with staggered animation */
+.auth-page .bg-orb-1 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.auth-page .bg-orb-2 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: 1s;
+}
+
+.auth-page .bg-orb-3 {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: 2s;
+}
+
+/* Card glow animation */
+.auth-page .card-glow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions */
+.auth-page input,
+.auth-page button,
+.auth-page a {
+  transition: all 200ms ease;
+}
+
+.auth-page .toggle-btn {
+  transition: all 300ms ease;
+}
+
+/* Custom checkbox styling */
+.auth-page input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Hover effects */
+.auth-page .social-btn:hover {
+  transform: scale(1.02);
+}
+
+.auth-page .social-btn:active {
+  transform: scale(0.98);
+}
+
+.auth-page .submit-btn:hover {
+  transform: scale(1.02);
+}
+
+.auth-page .submit-btn:active {
+  transform: scale(0.98);
+}
+
+.auth-page .submit-btn:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+/* Focus states */
+.auth-page input:focus {
+  outline: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .auth-page .auth-card {
+    padding: 24px;
+  }
+  
+  .auth-page h1 {
+    font-size: 24px;
+  }
+}

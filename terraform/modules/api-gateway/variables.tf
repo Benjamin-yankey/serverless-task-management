@@ -53,6 +53,16 @@ variable "assign_task_lambda_invoke_arn" {
   type        = string
 }
 
+variable "list_users_lambda_arn" {
+  description = "List users Lambda ARN"
+  type        = string
+}
+
+variable "list_users_lambda_invoke_arn" {
+  description = "List users Lambda invoke ARN"
+  type        = string
+}
+
 variable "api_gateway_cloudwatch_role_arn" {
   description = "API Gateway CloudWatch role ARN"
   type        = string

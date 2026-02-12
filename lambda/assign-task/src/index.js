@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns');
 const { CognitoIdentityProviderClient, AdminGetUserCommand } = require('@aws-sdk/client-cognito-identity-provider');
 const { v4: uuidv4 } = require('uuid');
@@ -109,18 +109,9 @@ exports.handler = async (event) => {
     
     const userId = cognitoUser.UserAttributes.find(attr => attr.Name === 'sub')?.Value;
     
-    // Check for duplicate assignment
-    const existingAssignment = await docClient.send(new QueryCommand({
-      TableName: ASSIGNMENTS_TABLE,
-      IndexName: 'TaskIndex',
-      KeyConditionExpression: 'taskId = :taskId AND userId = :userId',
-      ExpressionAttributeValues: {
-        ':taskId': taskId,
-        ':userId': userId
-      }
-    }));
-    
-    if (existingAssignment.Items && existingAssignment.Items.length > 0) {
+    // Check if user is already assigned
+    const currentAssignedTo = task.assignedTo || [];
+    if (currentAssignedTo.includes(userEmail)) {
       return {
         statusCode: 409,
         headers: {
@@ -148,7 +139,6 @@ exports.handler = async (event) => {
     }));
     
     // Update task's assignedTo array
-    const currentAssignedTo = task.assignedTo || [];
     await docClient.send(new UpdateCommand({
       TableName: TASKS_TABLE,
       Key: { taskId },

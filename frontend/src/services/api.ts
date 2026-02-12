@@ -66,6 +66,11 @@ class ApiService {
     });
     return response.data;
   }
+
+  async getUsers() {
+    const response = await this.api.get('/users');
+    return response.data;
+  }
 }
 
 export default new ApiService();

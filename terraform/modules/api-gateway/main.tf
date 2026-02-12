@@ -37,6 +37,13 @@ resource "aws_api_gateway_resource" "task_assign" {
   path_part   = "assign"
 }
 
+# /users resource
+resource "aws_api_gateway_resource" "users" {
+  rest_api_id = aws_api_gateway_rest_api.main.id
+  parent_id   = aws_api_gateway_rest_api.main.root_resource_id
+  path_part   = "users"
+}
+
 # POST /tasks (Create Task)
 resource "aws_api_gateway_method" "create_task" {
   rest_api_id   = aws_api_gateway_rest_api.main.id
@@ -109,6 +116,24 @@ resource "aws_api_gateway_integration" "assign_task" {
   uri                     = var.assign_task_lambda_invoke_arn
 }
 
+# GET /users (List Users)
+resource "aws_api_gateway_method" "list_users" {
+  rest_api_id   = aws_api_gateway_rest_api.main.id
+  resource_id   = aws_api_gateway_resource.users.id
+  http_method   = "GET"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito.id
+}
+
+resource "aws_api_gateway_integration" "list_users" {
+  rest_api_id             = aws_api_gateway_rest_api.main.id
+  resource_id             = aws_api_gateway_resource.users.id
+  http_method             = aws_api_gateway_method.list_users.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = var.list_users_lambda_invoke_arn
+}
+
 # CORS for /tasks
 module "cors_tasks" {
   source = "squidfunk/api-gateway-enable-cors/aws"
@@ -134,6 +159,15 @@ module "cors_task_assign" {
 
   api_id          = aws_api_gateway_rest_api.main.id
   api_resource_id = aws_api_gateway_resource.task_assign.id
+}
+
+# CORS for /users
+module "cors_users" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.3"
+
+  api_id          = aws_api_gateway_rest_api.main.id
+  api_resource_id = aws_api_gateway_resource.users.id
 }
 
 # Lambda permissions
@@ -169,6 +203,14 @@ resource "aws_lambda_permission" "assign_task" {
   source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
 }
 
+resource "aws_lambda_permission" "list_users" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = var.list_users_lambda_arn
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.main.execution_arn}/*/*"
+}
+
 # API Deployment
 resource "aws_api_gateway_deployment" "main" {
   rest_api_id = aws_api_gateway_rest_api.main.id
@@ -178,6 +220,7 @@ resource "aws_api_gateway_deployment" "main" {
     aws_api_gateway_integration.get_tasks,
     aws_api_gateway_integration.update_task,
     aws_api_gateway_integration.assign_task,
+    aws_api_gateway_integration.list_users,
   ]
 
   lifecycle {

@@ -1,0 +1,284 @@
+/* Authentication Pages Styling */
+
+/* Override Amplify Authenticator with custom design */
+[data-amplify-authenticator] {
+  --amplify-colors-background-primary: var(--background);
+  --amplify-colors-background-secondary: var(--card-bg);
+  --amplify-colors-brand-primary-10: var(--primary-light);
+  --amplify-colors-brand-primary-80: var(--primary);
+  --amplify-colors-brand-primary-90: var(--primary-dark);
+  --amplify-colors-brand-primary-100: var(--primary-dark);
+  --amplify-colors-font-interactive: var(--primary);
+  --amplify-colors-border-primary: var(--border);
+  --amplify-colors-border-focus: var(--primary);
+  --amplify-radii-medium: 8px;
+  --amplify-radii-large: 16px;
+  --amplify-space-medium: 16px;
+  --amplify-space-large: 24px;
+  --amplify-space-xl: 32px;
+  --amplify-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Main container */
+[data-amplify-authenticator] [data-amplify-container] {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Form container */
+[data-amplify-authenticator] [data-amplify-form] {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid var(--border);
+}
+
+/* Logo/Brand section */
+[data-amplify-authenticator] [data-amplify-router] {
+  box-shadow: none;
+  border: none;
+}
+
+/* Add custom logo */
+[data-amplify-authenticator]::before {
+  content: '✓';
+  display: block;
+  text-align: center;
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+
+/* Headings */
+[data-amplify-authenticator] h2,
+[data-amplify-authenticator] h3 {
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+[data-amplify-authenticator] h2 {
+  font-size: 24px;
+}
+
+/* Subtitle text */
+[data-amplify-authenticator] [data-amplify-router-content] > div:first-child {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* Input fields */
+[data-amplify-authenticator] input,
+[data-amplify-authenticator] select {
+  height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background: var(--card-bg);
+  color: var(--text-primary);
+}
+
+[data-amplify-authenticator] input:hover {
+  border-color: var(--border-focus);
+}
+
+[data-amplify-authenticator] input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Labels */
+[data-amplify-authenticator] label {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* Buttons */
+[data-amplify-authenticator] button[type="submit"],
+[data-amplify-authenticator] button[data-variation="primary"] {
+  width: 100%;
+  height: 48px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+[data-amplify-authenticator] button[type="submit"]:hover,
+[data-amplify-authenticator] button[data-variation="primary"]:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-amplify-authenticator] button[type="submit"]:active,
+[data-amplify-authenticator] button[data-variation="primary"]:active {
+  transform: translateY(0);
+}
+
+[data-amplify-authenticator] button[type="submit"]:focus,
+[data-amplify-authenticator] button[data-variation="primary"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+/* Secondary buttons */
+[data-amplify-authenticator] button[data-variation="link"] {
+  color: var(--primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+[data-amplify-authenticator] button[data-variation="link"]:hover {
+  text-decoration: underline;
+}
+
+/* Error messages */
+[data-amplify-authenticator] [data-amplify-error],
+[data-amplify-authenticator] [role="alert"] {
+  background: var(--error-bg);
+  border: 1px solid #fee2e2;
+  color: var(--danger);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* Field descriptions */
+[data-amplify-authenticator] [data-amplify-field-group__field-wrapper] small {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Tabs (Sign In / Sign Up) */
+[data-amplify-authenticator] [role="tablist"] {
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 24px;
+}
+
+[data-amplify-authenticator] [role="tab"] {
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 12px 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-amplify-authenticator] [role="tab"][aria-selected="true"] {
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+}
+
+/* Footer links */
+[data-amplify-authenticator] [data-amplify-footer] {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+[data-amplify-authenticator] [data-amplify-footer] button {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Checkbox */
+[data-amplify-authenticator] input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Password visibility toggle */
+[data-amplify-authenticator] button[aria-label*="password"] {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+[data-amplify-authenticator] button[aria-label*="password"]:hover {
+  color: var(--text-primary);
+}
+
+/* Loading state */
+[data-amplify-authenticator] [data-amplify-loader] {
+  border-color: var(--primary);
+  border-top-color: transparent;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  [data-amplify-authenticator] [data-amplify-form] {
+    padding: 24px 16px;
+  }
+  
+  [data-amplify-authenticator] h2 {
+    font-size: 20px;
+  }
+  
+  [data-amplify-authenticator] input,
+  [data-amplify-authenticator] button[type="submit"] {
+    height: 44px;
+  }
+}
+
+/* Animation */
+[data-amplify-authenticator] [data-amplify-form] {
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom branding text */
+[data-amplify-authenticator] [data-amplify-router-content]::before {
+  content: 'Task Manager';
+  display: block;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+/* Success states */
+[data-amplify-authenticator] input:valid:not(:placeholder-shown) {
+  border-color: var(--success);
+}
+
+/* Focus within form */
+[data-amplify-authenticator] [data-amplify-form]:focus-within {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}

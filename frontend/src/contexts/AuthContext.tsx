@@ -44,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await signOut();
       setUser(null);
       setIsAdmin(false);
+      window.location.href = '/';
     } catch (error) {
       console.error('Error signing out:', error);
     }

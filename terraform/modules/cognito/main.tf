@@ -69,6 +69,18 @@ resource "aws_cognito_user_pool" "main" {
   }
   
   schema {
+    name                = "name"
+    attribute_data_type = "String"
+    mutable             = true
+    required           = false
+    
+    string_attribute_constraints {
+      min_length = 1
+      max_length = 256
+    }
+  }
+  
+  schema {
     name                = "role"
     attribute_data_type = "String"
     mutable             = true
@@ -107,6 +119,18 @@ resource "aws_cognito_user_pool_client" "web_client" {
     "ALLOW_USER_PASSWORD_AUTH"
   ]
   
+  # OAuth configuration
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code", "implicit"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile"]
+  callback_urls                        = var.callback_urls
+  logout_urls                          = var.logout_urls
+  supported_identity_providers         = concat(
+    ["COGNITO"],
+    var.google_client_id != "" ? ["Google"] : [],
+    var.github_client_id != "" ? ["GitHub"] : []
+  )
+  
   token_validity_units {
     access_token  = "minutes"
     id_token      = "minutes"
@@ -122,11 +146,13 @@ resource "aws_cognito_user_pool_client" "web_client" {
   read_attributes = [
     "email",
     "email_verified",
+    "name",
     "custom:role"
   ]
   
   write_attributes = [
-    "email"
+    "email",
+    "name"
   ]
 }
 
@@ -150,4 +176,48 @@ resource "aws_cognito_user_group" "members" {
   user_pool_id = aws_cognito_user_pool.main.id
   description  = "Member users with limited access"
   precedence   = 2
+}
+
+# Google Identity Provider
+resource "aws_cognito_identity_provider" "google" {
+  count         = var.google_client_id != "" ? 1 : 0
+  user_pool_id  = aws_cognito_user_pool.main.id
+  provider_name = "Google"
+  provider_type = "Google"
+
+  provider_details = {
+    authorize_scopes = "email openid profile"
+    client_id        = var.google_client_id
+    client_secret    = var.google_client_secret
+  }
+
+  attribute_mapping = {
+    email    = "email"
+    username = "sub"
+  }
+}
+
+# GitHub Identity Provider
+resource "aws_cognito_identity_provider" "github" {
+  count         = var.github_client_id != "" ? 1 : 0
+  user_pool_id  = aws_cognito_user_pool.main.id
+  provider_name = "GitHub"
+  provider_type = "OIDC"
+
+  provider_details = {
+    authorize_scopes              = "user:email"
+    client_id                     = var.github_client_id
+    client_secret                 = var.github_client_secret
+    attributes_request_method     = "GET"
+    oidc_issuer                   = "https://github.com"
+    authorize_url                 = "https://github.com/login/oauth/authorize"
+    token_url                     = "https://github.com/login/oauth/access_token"
+    attributes_url                = "https://api.github.com/user"
+    jwks_uri                      = "https://token.actions.githubusercontent.com/.well-known/jwks"
+  }
+
+  attribute_mapping = {
+    email    = "email"
+    username = "sub"
+  }
 }

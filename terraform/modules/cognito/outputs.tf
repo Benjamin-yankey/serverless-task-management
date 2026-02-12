@@ -27,3 +27,10 @@ output "member_group_name" {
   description = "Member group name"
   value       = aws_cognito_user_group.members.name
 }
+
+output "hosted_ui_url" {
+  description = "Cognito Hosted UI URL"
+  value       = "https://${aws_cognito_user_pool_domain.main.domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
+}
+
+data "aws_region" "current" {}

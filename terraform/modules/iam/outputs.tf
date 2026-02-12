@@ -19,6 +19,10 @@ output "assign_task_lambda_role_arn" {
   value = aws_iam_role.assign_task_lambda.arn
 }
 
+output "list_users_lambda_role_arn" {
+  value = aws_iam_role.list_users_lambda.arn
+}
+
 output "api_gateway_cloudwatch_role_arn" {
   description = "API Gateway CloudWatch role ARN"
   value       = aws_iam_role.api_gateway_cloudwatch.arn

@@ -1,0 +1,22 @@
+# Required Variables
+admin_email           = "your-email@amalitech.com"
+cognito_domain_prefix = "task-mgmt-yourname-unique"  # Must be globally unique
+
+# Optional: OAuth Configuration
+# Uncomment and fill in to enable Google/GitHub sign-in
+# See OAUTH_SETUP.md for detailed setup instructions
+
+# google_client_id     = "your-google-client-id.apps.googleusercontent.com"
+# google_client_secret = "your-google-client-secret"
+# github_client_id     = "your-github-client-id"
+# github_client_secret = "your-github-client-secret"
+
+# callback_urls = [
+#   "http://localhost:3000",
+#   "https://main.xxxxx.amplifyapp.com"  # Replace with your Amplify URL
+# ]
+
+# logout_urls = [
+#   "http://localhost:3000",
+#   "https://main.xxxxx.amplifyapp.com"  # Replace with your Amplify URL
+# ]

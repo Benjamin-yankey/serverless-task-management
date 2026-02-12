@@ -1,13 +1,16 @@
 .navbar {
-  background-color: #232f3e;
-  padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 16px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,29 +18,85 @@
 
 .navbar-brand {
   color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.25rem;
+  font-weight: 700;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
+}
+
+.navbar-brand::before {
+  content: '☰';
+  font-size: 1.5rem;
 }
 
 .navbar-menu {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .navbar-user {
   color: white;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.navbar-user::before {
+  content: '';
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .admin-badge {
-  background-color: #ff9900;
-  color: #232f3e;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  background-color: var(--success);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.navbar .btn-secondary {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar .btn-secondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 640px) {
+  .navbar-container {
+    padding: 12px 16px;
+  }
+  
+  .navbar-brand {
+    font-size: 1rem;
+  }
+  
+  .navbar-user {
+    font-size: 0.8rem;
+  }
+  
+  .navbar .btn-secondary {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+  }
 }

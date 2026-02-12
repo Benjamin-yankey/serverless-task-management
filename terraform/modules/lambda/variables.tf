@@ -34,6 +34,10 @@ variable "assign_task_lambda_role_arn" {
   type = string
 }
 
+variable "list_users_lambda_role_arn" {
+  type = string
+}
+
 variable "tasks_table_name" {
   description = "Tasks table name"
   type        = string

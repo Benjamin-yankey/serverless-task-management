@@ -5,6 +5,13 @@ export const awsConfig = {
       userPoolClientId: process.env.REACT_APP_USER_POOL_CLIENT_ID || '',
       loginWith: {
         email: true,
+        oauth: {
+          domain: process.env.REACT_APP_COGNITO_DOMAIN || '',
+          scopes: ['email', 'openid', 'profile'],
+          redirectSignIn: [window.location.origin],
+          redirectSignOut: [window.location.origin],
+          responseType: 'code',
+        },
       },
       signUpVerificationMethod: 'code' as 'code' | 'link' | undefined,
       userAttributes: {

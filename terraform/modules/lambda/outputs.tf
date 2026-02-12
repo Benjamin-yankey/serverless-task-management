@@ -47,3 +47,13 @@ output "assign_task_lambda_invoke_arn" {
   description = "Assign task Lambda invoke ARN"
   value       = aws_lambda_function.assign_task.invoke_arn
 }
+
+output "list_users_lambda_arn" {
+  description = "List users Lambda ARN"
+  value       = aws_lambda_function.list_users.arn
+}
+
+output "list_users_lambda_invoke_arn" {
+  description = "List users Lambda invoke ARN"
+  value       = aws_lambda_function.list_users.invoke_arn
+}

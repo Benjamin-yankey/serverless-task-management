@@ -77,6 +77,14 @@ module "cognito" {
   environment           = var.environment
   cognito_domain_prefix = var.cognito_domain_prefix
   pre_signup_lambda_arn = aws_lambda_function.pre_signup_temp.arn
+  
+  # OAuth providers (optional)
+  google_client_id     = var.google_client_id
+  google_client_secret = var.google_client_secret
+  github_client_id     = var.github_client_id
+  github_client_secret = var.github_client_secret
+  callback_urls        = var.callback_urls
+  logout_urls          = var.logout_urls
 
   depends_on = [aws_lambda_function.pre_signup_temp]
 }
@@ -108,6 +116,7 @@ module "lambda" {
   get_tasks_lambda_role_arn   = module.iam.get_tasks_lambda_role_arn
   update_task_lambda_role_arn = module.iam.update_task_lambda_role_arn
   assign_task_lambda_role_arn = module.iam.assign_task_lambda_role_arn
+  list_users_lambda_role_arn  = module.iam.list_users_lambda_role_arn
   tasks_table_name            = module.dynamodb.tasks_table_name
   assignments_table_name      = module.dynamodb.assignments_table_name
   sns_topic_arn               = module.ses.sns_topic_arn
@@ -131,6 +140,8 @@ module "api_gateway" {
   update_task_lambda_invoke_arn   = module.lambda.update_task_lambda_invoke_arn
   assign_task_lambda_arn          = module.lambda.assign_task_lambda_arn
   assign_task_lambda_invoke_arn   = module.lambda.assign_task_lambda_invoke_arn
+  list_users_lambda_arn           = module.lambda.list_users_lambda_arn
+  list_users_lambda_invoke_arn    = module.lambda.list_users_lambda_invoke_arn
   api_gateway_cloudwatch_role_arn = module.iam.api_gateway_cloudwatch_role_arn
 
   depends_on = [module.lambda, module.cognito]

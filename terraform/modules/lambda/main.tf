@@ -194,3 +194,44 @@ resource "aws_lambda_function" "assign_task" {
     Name = "${var.project_name}-assign-task-${var.environment}"
   }
 }
+
+# List Users Lambda
+data "archive_file" "list_users" {
+  type        = "zip"
+  source_dir  = "${path.module}/../../../lambda/list-users/src"
+  output_path = "${path.module}/../../../lambda/list-users/function.zip"
+}
+
+resource "null_resource" "list_users_dependencies" {
+  triggers = {
+    package_json = filemd5("${path.module}/../../../lambda/list-users/src/package.json")
+  }
+
+  provisioner "local-exec" {
+    command     = "npm install --production"
+    working_dir = abspath("${path.module}/../../../lambda/list-users/src")
+  }
+}
+
+resource "aws_lambda_function" "list_users" {
+  filename         = data.archive_file.list_users.output_path
+  function_name    = "${var.project_name}-list-users-${var.environment}"
+  role            = var.list_users_lambda_role_arn
+  handler         = "index.handler"
+  source_code_hash = data.archive_file.list_users.output_base64sha256
+  runtime         = "nodejs20.x"
+  timeout         = 30
+  memory_size     = 256
+
+  environment {
+    variables = {
+      USER_POOL_ID = var.user_pool_id
+    }
+  }
+
+  depends_on = [null_resource.list_users_dependencies]
+
+  tags = {
+    Name = "${var.project_name}-list-users-${var.environment}"
+  }
+}

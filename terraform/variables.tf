@@ -31,3 +31,41 @@ variable "cognito_domain_prefix" {
   description = "Cognito domain prefix (must be globally unique)"
   type        = string
 }
+
+variable "google_client_id" {
+  description = "Google OAuth client ID (optional)"
+  type        = string
+  default     = ""
+}
+
+variable "google_client_secret" {
+  description = "Google OAuth client secret (optional)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "github_client_id" {
+  description = "GitHub OAuth client ID (optional)"
+  type        = string
+  default     = ""
+}
+
+variable "github_client_secret" {
+  description = "GitHub OAuth client secret (optional)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "callback_urls" {
+  description = "OAuth callback URLs"
+  type        = list(string)
+  default     = ["http://localhost:3000", "http://localhost:3000/"]
+}
+
+variable "logout_urls" {
+  description = "OAuth logout URLs"
+  type        = list(string)
+  default     = ["http://localhost:3000", "http://localhost:3000/"]
+}

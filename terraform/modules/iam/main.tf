@@ -157,7 +157,7 @@ resource "aws_iam_role_policy" "assign_task_dynamodb" {
     Statement = [
       {
         Effect = "Allow"
-        Action = ["dynamodb:GetItem", "dynamodb:PutItem"]
+        Action = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem"]
         Resource = [var.tasks_table_arn, var.assignments_table_arn]
       }
     ]
@@ -211,6 +211,37 @@ resource "aws_iam_role" "api_gateway_cloudwatch" {
 resource "aws_iam_role_policy_attachment" "api_gateway_cloudwatch" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
   role       = aws_iam_role.api_gateway_cloudwatch.name
+}
+
+# Role for List Users
+resource "aws_iam_role" "list_users_lambda" {
+  name = "${var.project_name}-list-users-lambda-${var.environment}"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = { Service = "lambda.amazonaws.com" }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "list_users_lambda_basic" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.list_users_lambda.name
+}
+
+resource "aws_iam_role_policy" "list_users_cognito" {
+  name = "${var.project_name}-list-users-cognito-${var.environment}"
+  role = aws_iam_role.list_users_lambda.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = ["cognito-idp:ListUsers", "cognito-idp:AdminListGroupsForUser"]
+      Resource = var.cognito_user_pool_arn
+    }]
+  })
 }
 
 # Cognito permission to invoke pre-signup lambda

@@ -45,24 +45,36 @@ exports.handler = async (event) => {
     // Check permissions
     if (!isAdmin) {
       // Check if user is assigned to this task
-      const assignmentResult = await docClient.send(new QueryCommand({
-        TableName: ASSIGNMENTS_TABLE,
-        IndexName: 'TaskIndex',
-        KeyConditionExpression: 'taskId = :taskId AND userId = :userId',
-        ExpressionAttributeValues: {
-          ':taskId': taskId,
-          ':userId': userId
+      try {
+        const assignmentResult = await docClient.send(new QueryCommand({
+          TableName: ASSIGNMENTS_TABLE,
+          IndexName: 'TaskIndex',
+          KeyConditionExpression: 'taskId = :taskId AND userId = :userId',
+          ExpressionAttributeValues: {
+            ':taskId': taskId,
+            ':userId': userId
+          }
+        }));
+        
+        if (!assignmentResult.Items || assignmentResult.Items.length === 0) {
+          return {
+            statusCode: 403,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ error: 'You are not assigned to this task' })
+          };
         }
-      }));
-      
-      if (!assignmentResult.Items || assignmentResult.Items.length === 0) {
+      } catch (queryError) {
+        console.error('Assignment query error:', queryError);
         return {
           statusCode: 403,
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
           },
-          body: JSON.stringify({ error: 'You are not assigned to this task' })
+          body: JSON.stringify({ error: 'Permission check failed', details: queryError.message })
         };
       }
     }
@@ -103,26 +115,27 @@ exports.handler = async (event) => {
     
     // Send notifications if status changed
     if (status && status !== task.status) {
-      // Get all assigned users
-      const assignmentsResult = await docClient.send(new QueryCommand({
-        TableName: ASSIGNMENTS_TABLE,
-        IndexName: 'TaskIndex',
-        KeyConditionExpression: 'taskId = :taskId',
-        ExpressionAttributeValues: {
-          ':taskId': taskId
-        }
-      }));
-      
-      const assignedEmails = assignmentsResult.Items.map(a => a.userEmail).filter(e => e !== userEmail);
-      
-      // Notify assigned members and admin
-      if (assignedEmails.length > 0 || task.createdBy) {
-        const recipients = [...new Set([...assignedEmails, task.createdBy])];
+      try {
+        // Get all assigned users
+        const assignmentsResult = await docClient.send(new QueryCommand({
+          TableName: ASSIGNMENTS_TABLE,
+          IndexName: 'TaskIndex',
+          KeyConditionExpression: 'taskId = :taskId',
+          ExpressionAttributeValues: {
+            ':taskId': taskId
+          }
+        }));
         
-        await snsClient.send(new PublishCommand({
-          TopicArn: NOTIFICATION_TOPIC_ARN,
-          Subject: `Task Status Updated: ${task.title}`,
-          Message: `Task "${task.title}" status has been updated from "${task.status}" to "${status}" by ${userEmail}.
+        const assignedEmails = assignmentsResult.Items.map(a => a.userEmail).filter(e => e !== userEmail);
+        
+        // Notify assigned members and admin
+        if (assignedEmails.length > 0 || task.createdBy) {
+          const recipients = [...new Set([...assignedEmails, task.createdBy])];
+          
+          await snsClient.send(new PublishCommand({
+            TopicArn: NOTIFICATION_TOPIC_ARN,
+            Subject: `Task Status Updated: ${task.title}`,
+            Message: `Task "${task.title}" status has been updated from "${task.status}" to "${status}" by ${userEmail}.
           
 Task Details:
 - Task ID: ${taskId}
@@ -131,7 +144,11 @@ Task Details:
 - Updated by: ${userEmail}
 
 View task details in the Task Management System.`
-        }));
+          }));
+        }
+      } catch (notificationError) {
+        console.error('Notification error (non-critical):', notificationError);
+        // Don't fail the request if notification fails
       }
     }
     
