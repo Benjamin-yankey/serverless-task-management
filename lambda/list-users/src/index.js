@@ -4,6 +4,19 @@ const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGIO
 
 exports.handler = async (event) => {
   try {
+    // Authorization check - only admins can list users
+    const groups = event.requestContext?.authorizer?.claims?.['cognito:groups'] || '';
+    if (!groups.includes('Admins')) {
+      return {
+        statusCode: 403,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ error: 'Only admins can list users' })
+      };
+    }
+    
     const userPoolId = process.env.USER_POOL_ID;
     
     const listUsersCommand = new ListUsersCommand({

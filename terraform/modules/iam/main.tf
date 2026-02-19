@@ -79,7 +79,7 @@ resource "aws_iam_role_policy" "get_tasks_dynamodb" {
     Version = "2012-10-17"
     Statement = [{
       Effect = "Allow"
-      Action = ["dynamodb:Scan", "dynamodb:Query"]
+      Action = ["dynamodb:Query", "dynamodb:BatchGetItem"]
       Resource = [var.tasks_table_arn, "${var.tasks_table_arn}/index/*", var.assignments_table_arn, "${var.assignments_table_arn}/index/*"]
     }]
   })

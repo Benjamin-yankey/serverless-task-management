@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, ScanCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, QueryCommand, BatchGetCommand } = require('@aws-sdk/lib-dynamodb');
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -17,10 +17,24 @@ exports.handler = async (event) => {
     const isAdmin = groups.includes('Admins');
     
     if (isAdmin) {
-      // Admins can see all tasks
-      const result = await docClient.send(new ScanCommand({
-        TableName: TASKS_TABLE
-      }));
+      // Admins can see all tasks - query by status
+      const statuses = ['open', 'in-progress', 'completed', 'closed'];
+      const queryPromises = statuses.map(status =>
+        docClient.send(new QueryCommand({
+          TableName: TASKS_TABLE,
+          IndexName: 'StatusIndex',
+          KeyConditionExpression: '#status = :status',
+          ExpressionAttributeNames: {
+            '#status': 'status'
+          },
+          ExpressionAttributeValues: {
+            ':status': status
+          }
+        }))
+      );
+      
+      const results = await Promise.all(queryPromises);
+      const tasks = results.flatMap(result => result.Items || []);
       
       return {
         statusCode: 200,
@@ -29,8 +43,8 @@ exports.handler = async (event) => {
           'Access-Control-Allow-Origin': '*'
         },
         body: JSON.stringify({
-          tasks: result.Items || [],
-          count: result.Count
+          tasks,
+          count: tasks.length
         })
       };
     } else {
@@ -60,19 +74,21 @@ exports.handler = async (event) => {
         };
       }
       
-      // Fetch all assigned tasks
-      const tasksPromises = taskIds.map(taskId =>
-        docClient.send(new ScanCommand({
-          TableName: TASKS_TABLE,
-          FilterExpression: 'taskId = :taskId',
-          ExpressionAttributeValues: {
-            ':taskId': taskId
-          }
-        }))
-      );
+      // Fetch all assigned tasks using BatchGet
+      const batchSize = 100;
+      const tasks = [];
       
-      const tasksResults = await Promise.all(tasksPromises);
-      const tasks = tasksResults.flatMap(result => result.Items || []);
+      for (let i = 0; i < taskIds.length; i += batchSize) {
+        const batch = taskIds.slice(i, i + batchSize);
+        const result = await docClient.send(new BatchGetCommand({
+          RequestItems: {
+            [TASKS_TABLE]: {
+              Keys: batch.map(taskId => ({ taskId }))
+            }
+          }
+        }));
+        tasks.push(...(result.Responses[TASKS_TABLE] || []));
+      }
       
       return {
         statusCode: 200,
