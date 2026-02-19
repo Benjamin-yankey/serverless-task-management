@@ -45,6 +45,7 @@ Thumbs.db
 *.pem
 *.key
 
+
 # AWS
 .aws-sam/
 PROJECT_DESCRIPTION.md
