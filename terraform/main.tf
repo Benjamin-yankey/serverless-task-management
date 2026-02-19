@@ -77,7 +77,7 @@ module "cognito" {
   environment           = var.environment
   cognito_domain_prefix = var.cognito_domain_prefix
   pre_signup_lambda_arn = aws_lambda_function.pre_signup_temp.arn
-  
+
   # OAuth providers (optional)
   google_client_id     = var.google_client_id
   google_client_secret = var.google_client_secret
