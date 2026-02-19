@@ -53,6 +53,7 @@ variable "sns_topic_arn" {
   type        = string
 }
 
+
 variable "user_pool_id" {
   description = "Cognito User Pool ID"
   type        = string
