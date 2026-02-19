@@ -48,3 +48,4 @@ Thumbs.db
 # AWS
 .aws-sam/
 PROJECT_DESCRIPTION.md
+OAUTH_IMPLEMENTATION.md
