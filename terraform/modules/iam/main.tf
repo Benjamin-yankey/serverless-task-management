@@ -171,7 +171,7 @@ resource "aws_iam_role_policy" "assign_task_cognito" {
     Version = "2012-10-17"
     Statement = [{
       Effect = "Allow"
-      Action = ["cognito-idp:AdminGetUser", "cognito-idp:ListUsers"]
+      Action = ["cognito-idp:AdminGetUser"]
       Resource = var.cognito_user_pool_arn
     }]
   })
